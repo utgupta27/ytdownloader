@@ -1,0 +1,357 @@
+from tkinter import *
+from tkinter import ttk
+from tkinter import filedialog
+from pytube import YouTube
+
+
+def getPath():
+    global path
+    path = filedialog.askdirectory()
+    pathDisplay.config(
+        text= "Location: "+path,
+        font= ("calibri",12,"bold"),
+        bg='light blue'
+    )
+
+def get_video_info(url):
+
+    details=[]
+    yt=YouTube(url,on_progress_callback=progress_check)
+    details.append(yt.title)
+    details.append(yt.rating)
+    details.append(yt.length)
+    details.append(yt.views)
+    return details
+    
+
+def get_streams(url):
+
+    global yt
+    streams = []
+    yt= YouTube(url,on_progress_callback=progress_check)
+    streams.append(yt.streams.get_by_itag(22))
+    streams.append(yt.streams.get_by_itag(18))
+    streams.append(yt.streams.get_by_itag(133))
+    streams.append(yt.streams.get_by_itag(160))
+    streams.append(yt.streams.get_by_itag(251))
+    return streams
+    
+
+def getVideoDetails():
+
+    global data 
+    global videoStream
+    videoUrl = inputlink.get()
+    
+    try:
+        data= get_video_info(videoUrl)
+        videoStream = get_streams(videoUrl)
+    except:
+        videoInfoMsg.config(
+            text="Error Occured : Enter a Valid Url...",
+            font= ("calibri",15,"bold"),bg='red'
+            )
+    else:
+        videoInfoMsg.config(
+            text="Video Found: Available for download ",
+            font= ("calibri",15,"bold"),
+            bg='light green'
+            )
+        videoTitle.config(
+            text="Title : "+ data[0],
+            font= ("calibri",12,"bold"),
+            bg='light blue'
+            )
+        videoRating.config(
+            text="Rating : "+ str(data[1]),
+            font= ("calibri",12,"bold"),
+            bg='light blue'
+            )
+        videoDuration.config(
+            text="Duration : "+ str(data[2])+" Seconds",
+            font= ("calibri",12,"bold"),
+            bg='light blue'
+            )
+        videoViews.config(
+            text="Views : "+ str(data[3]),
+            font= ("calibri",12,"bold"),
+            bg='light blue'
+            )
+
+def download():
+    global fileSize
+    videoIndex = index.get()
+    prefferedStream = videoStream[videoIndex]
+    fileSize = prefferedStream.filesize
+    try:
+        sizeDisplay.config(
+            text="File Size :"+ str(fileSize//1024)+" KB",
+            font= ("calibri",12,"bold"),
+            bg='light blue'
+        )
+        prefferedStream.download(path)
+    except: 
+        downloadSuccess.config(
+            text="Download Failed : Download Again",
+            font= ("calibri",15,"bold"),bg='red'
+            )
+    else:
+        downloadSuccess.config(
+            text="Download Success",
+            font= ("calibri",15,"bold"),bg='light green'
+            )
+
+def progress_check(stream,chunk,bytes_remaining):
+    percent = (100*(fileSize-bytes_remaining))//fileSize
+    progressDisplay.config(
+        text= str(percent) + "%",
+        font= ("calibri",12,"bold"),
+        bg='yellow'
+
+    )
+
+
+
+main = Tk()
+main.title('YouTube Downloader')
+main.geometry('500x600')
+main.resizable(0,0)
+
+
+
+# top frame starts here
+introFrame = Frame(main)
+youTubeDownloader = Label(
+    introFrame,
+    text='YouTube Downloader',
+    padx=10,
+    font=("calibri",40,'bold'),
+    pady=5,
+    bg='red',
+    foreground = "white"
+    )
+youTubeDownloader.grid(
+    column = 1
+    )
+
+
+subTitle = Label(
+    introFrame,
+    text='A video downloader for Youtube Videos Only',
+    font= ("calibri",10,"bold")
+)
+subTitle.grid(
+    column =1 ,
+    row =1
+    )
+
+introFrame.grid(
+    column = 1
+    )
+
+
+inputFrame = Frame(main)
+
+# videoButton = Button(
+#     inputFrame,
+#     text = "Download Video",
+#     command = None)
+# videoButton.grid(column= 1  ,row = 0)
+# space = Label(inputFrame,text='                                     ')
+# space.grid(column= 2  ,row = 0)
+# playListButton = Button(
+#     inputFrame,
+#     text = "Download Full PlayList",
+#     command = None
+#     )
+# playListButton.grid(column= 3  ,row = 0)
+
+
+inputFrame.grid(
+    column = 1,
+    row =1
+    )
+
+inputFrame2= Frame(main)
+inputFrame2.grid(
+    column =1,
+    row =2,
+    pady = 10
+    )
+enterLink = Label(
+    inputFrame2,
+    text='Enter Video Link: ',
+    font=("calibri",12,"bold")
+    )
+enterLink.grid(
+    column= 1  ,
+    row = 1
+    )
+
+videoUrl = StringVar()
+inputlink = Entry(
+    inputFrame2,
+    textvariable = videoUrl,
+    width =50
+    )
+inputlink.grid(
+    column= 2 ,
+    row = 1
+    )
+print(videoUrl)
+
+findVideo= Button(
+    inputFrame2,
+    text = "Find Video Information",
+    command = getVideoDetails
+    )
+findVideo.grid(
+    column = 1,
+    row =2,
+    pady=10
+    )
+videoInfoMsg = Label(
+    inputFrame2,
+    text='Msg: Video is Available for download  or not'
+    )
+videoInfoMsg.grid(
+    column= 2  ,
+    row = 2
+    )
+
+videoTitle = Label(
+    inputFrame2,
+    text="Title : ",
+    font= ("calibri",10,"bold")
+)
+videoTitle.grid(
+    column = 1,
+    row =3
+    )
+videoDuration = Label(
+    inputFrame2,
+    text="Duration : ",
+    font= ("calibri",10,"bold")
+)
+videoDuration.grid(column = 1,row =4)
+videoRating = Label(
+    inputFrame2,
+    text="Rating : ",
+    font= ("calibri",10,"bold")
+)
+videoRating.grid(column = 2,row =3)
+videoViews = Label(
+    inputFrame2,
+    text="Views : ",
+    font= ("calibri",10,"bold")
+)
+videoViews.grid(
+    column = 2,
+    row =4
+    )
+
+# frame 3 starts here 
+frame3 = Frame(main)
+frame3.grid(
+    column = 1 ,
+    row = 3)
+space = Label(
+    frame3,
+    font=("calibri",15,"bold"),
+    text='Select The Video Quality - '
+    )
+space.grid(
+    column= 0,
+    row = 0
+    )
+streamList=[
+    [''' Type="video/mp4" Resolution="720p" fps="30fps"'''],
+    [''' Type="video/mp4" Resolution="360p" fps="30fps"'''],
+    [''' Type="video/mp4" Resolution="240p" fps="30fps"'''],
+    [''' Type="video/mp4" Resolution="144p" fps="30fps"'''],
+    [''' Type="audio/webm" Bitrate="160kbps"           ''']]
+index = IntVar(main,1)
+for i in range(len(streamList)):
+    Radiobutton(
+        frame3,
+        text= streamList[i],
+        variable = index, 
+        value =i,
+        command = None).grid(column = 0 , row = i+1)
+
+frame4 = Frame(main)
+frame4.grid(
+    column =1 ,
+    row =4
+    )
+downloadPathButton = Button(frame4,
+    text = "Select Download Location : ",
+    command= getPath
+    )
+downloadPathButton.grid(
+    column= 0  ,
+    row = 7,
+    pady=5
+    )
+pathDisplay = Label(
+    frame4,
+    text='Msg: your selected path is displayed here'
+    )
+pathDisplay.grid(
+    column= 1  ,
+    row = 7
+    )
+
+
+downloadButton = Button(
+    frame4,
+    text = "Download Selected Video",
+    font=("calibri",10,"bold"),
+    command = download
+    )
+downloadButton.grid(
+    column= 1  ,
+    row = 8,
+    pady  = 5
+    )
+
+sizeDisplay = Label(
+    frame4,
+    text='File Size : '
+    )
+sizeDisplay.grid(
+    column= 0  ,
+    row = 8
+    )
+# implement frame 5 here
+frame5 = Frame(main)
+frame5.grid(column=1 ,row =5)
+
+progressDisplay = Label(
+    frame5,
+    text=''
+    )
+progressDisplay.grid(
+    column= 0  ,
+    row = 0
+    )
+
+downloadSuccess = Label(
+    frame5,
+    text=""
+    )
+downloadSuccess.grid(
+    column= 0  ,
+    row = 1
+    )
+
+cancle = Button(
+    frame5,
+    text="Cancle Download & Exit",
+    font=("calibri",10,"bold"),
+    foreground ="red",
+    command = main.destroy
+    )
+cancle.grid(column =0 ,row =2,pady=10 )
+
+main.mainloop()
