@@ -3,6 +3,15 @@ from tkinter import ttk
 from tkinter import filedialog
 from pytube import YouTube
 
+def update():
+    main.update()
+    videoInfoMsg.config(
+        text="Searching...(This may take time depending upon internet connection)",
+        font= ("calibri",9,"bold"),
+        bg='light blue'
+
+    )
+    main.update()
 
 def getPath():
     global path
@@ -12,11 +21,24 @@ def getPath():
         font= ("calibri",12,"bold"),
         bg='light blue'
     )
+    status()
+
+def status():
+    videoIndex = index.get()
+    prefferedStream = videoStream[videoIndex]
+    fileSize = prefferedStream.filesize
+    sizeDisplay.config(
+        text="File Size :"+ str(fileSize//1024)+" KB",
+        font= ("calibri",12,"bold"),
+        bg='light blue'
+    )
 
 def get_video_info(url):
 
     details=[]
-    yt=YouTube(url,on_progress_callback=progress_check)
+    update()
+    yt=YouTube(url)
+    main.update()
     details.append(yt.title)
     details.append(yt.rating)
     details.append(yt.length)
@@ -28,7 +50,9 @@ def get_streams(url):
 
     global yt
     streams = []
+    main.update()
     yt= YouTube(url,on_progress_callback=progress_check)
+    main.update()
     streams.append(yt.streams.get_by_itag(22))
     streams.append(yt.streams.get_by_itag(18))
     streams.append(yt.streams.get_by_itag(133))
@@ -45,7 +69,9 @@ def getVideoDetails():
     
     try:
         data= get_video_info(videoUrl)
+        main.update()
         videoStream = get_streams(videoUrl)
+        main.update()
     except:
         videoInfoMsg.config(
             text="Error Occured : Enter a Valid Url...",
@@ -58,38 +84,36 @@ def getVideoDetails():
             bg='light green'
             )
         videoTitle.config(
-            text="Title : "+ data[0],
-            font= ("calibri",12,"bold"),
+            text="Title : "+ data[0][:19],
+            font= ("calibri",10,"bold"),
             bg='light blue'
             )
         videoRating.config(
             text="Rating : "+ str(data[1]),
-            font= ("calibri",12,"bold"),
+            font= ("calibri",10,"bold"),
             bg='light blue'
             )
         videoDuration.config(
-            text="Duration : "+ str(data[2])+" Seconds",
-            font= ("calibri",12,"bold"),
+            text="Duration : "+ str(data[2])+" sec",
+            font= ("calibri",10,"bold"),
             bg='light blue'
             )
         videoViews.config(
             text="Views : "+ str(data[3]),
-            font= ("calibri",12,"bold"),
+            font= ("calibri",10,"bold"),
             bg='light blue'
             )
 
 def download():
     global fileSize
+    main.update()
     videoIndex = index.get()
     prefferedStream = videoStream[videoIndex]
     fileSize = prefferedStream.filesize
     try:
-        sizeDisplay.config(
-            text="File Size :"+ str(fileSize//1024)+" KB",
-            font= ("calibri",12,"bold"),
-            bg='light blue'
-        )
+        main.update()
         prefferedStream.download(path)
+        main.update()
     except: 
         downloadSuccess.config(
             text="Download Failed : Download Again",
@@ -100,15 +124,16 @@ def download():
             text="Download Success",
             font= ("calibri",15,"bold"),bg='light green'
             )
-
+global percent
 def progress_check(stream,chunk,bytes_remaining):
     percent = (100*(fileSize-bytes_remaining))//fileSize
+    main.update()
     progressDisplay.config(
         text= str(percent) + "%",
         font= ("calibri",12,"bold"),
         bg='yellow'
-
     )
+    progressBar['value'] = percent
 
 
 
@@ -151,20 +176,6 @@ introFrame.grid(
 
 
 inputFrame = Frame(main)
-
-# videoButton = Button(
-#     inputFrame,
-#     text = "Download Video",
-#     command = None)
-# videoButton.grid(column= 1  ,row = 0)
-# space = Label(inputFrame,text='                                     ')
-# space.grid(column= 2  ,row = 0)
-# playListButton = Button(
-#     inputFrame,
-#     text = "Download Full PlayList",
-#     command = None
-#     )
-# playListButton.grid(column= 3  ,row = 0)
 
 
 inputFrame.grid(
@@ -336,22 +347,36 @@ progressDisplay.grid(
     row = 0
     )
 
+frame6= Frame(main)
+frame6.grid(column =1 ,row =6)
+# add the dynamic progress bar 
+progressBar = ttk.Progressbar(frame6,orient=HORIZONTAL,length =450,mode ='determinate')
+progressBar.grid()
+
+
+frame7=Frame(main)
+frame7.grid(column =1 ,row =7)
 downloadSuccess = Label(
-    frame5,
+    frame7,
     text=""
     )
 downloadSuccess.grid(
     column= 0  ,
-    row = 1
+    row = 0
     )
 
 cancle = Button(
-    frame5,
+    frame7,
     text="Cancle Download & Exit",
     font=("calibri",10,"bold"),
     foreground ="red",
     command = main.destroy
     )
-cancle.grid(column =0 ,row =2,pady=10 )
+cancle.grid(
+    column= 0  ,
+    row = 1,
+    pady=5
+    )
+
 
 main.mainloop()
