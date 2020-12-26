@@ -27,8 +27,17 @@ def status():
     videoIndex = index.get()
     prefferedStream = videoStream[videoIndex]
     fileSize = prefferedStream.filesize
+    if fileSize>1024 *1024 *1024:
+        size = fileSize/(1024*1024)
+        unit = " GB"
+    elif fileSize > 1024*1024:
+        size = fileSize//(1024) 
+        unit = " MB"
+    else:
+        size = fileSize
+        unit = " KB"
     sizeDisplay.config(
-        text="File Size :"+ str(fileSize//1024)+" KB",
+        text="File Size :"+ str(size/1024)[:4]+ unit,
         font= ("calibri",12,"bold"),
         bg='light blue'
     )
@@ -43,6 +52,7 @@ def get_video_info(url):
     details.append(yt.rating)
     details.append(yt.length)
     details.append(yt.views)
+    main.update()
     return details
     
 
@@ -54,10 +64,15 @@ def get_streams(url):
     yt= YouTube(url,on_progress_callback=progress_check)
     main.update()
     streams.append(yt.streams.get_by_itag(22))
+    main.update()
     streams.append(yt.streams.get_by_itag(18))
+    main.update()
     streams.append(yt.streams.get_by_itag(133))
+    main.update()
     streams.append(yt.streams.get_by_itag(160))
+    main.update()
     streams.append(yt.streams.get_by_itag(251))
+    main.update()
     return streams
     
 
@@ -84,17 +99,26 @@ def getVideoDetails():
             bg='light green'
             )
         videoTitle.config(
-            text="Title : "+ data[0][:19],
+            text="Title : "+ data[0][:19]+"...",
             font= ("calibri",10,"bold"),
             bg='light blue'
             )
         videoRating.config(
-            text="Rating : "+ str(data[1]),
+            text="Rating : "+ str(data[1])[:3],
             font= ("calibri",10,"bold"),
             bg='light blue'
             )
+        if data[2]>60*60:
+            size = data[2]/(60*60)
+            unit = " Hrs"
+        elif data[2] > 60:
+            size = data[2]/(60) 
+            unit = " Mins"
+        else:
+            size = data[2]
+            unit = " Sec"
         videoDuration.config(
-            text="Duration : "+ str(data[2])+" sec",
+            text="Duration : "+ str(size)[:4]+unit,
             font= ("calibri",10,"bold"),
             bg='light blue'
             )
@@ -223,7 +247,8 @@ findVideo.grid(
     )
 videoInfoMsg = Label(
     inputFrame2,
-    text='Msg: Video is Available for download  or not'
+    text="e.g, link starts with 'www.youtube.com/<xyz>'",
+    font=("calibri",11,"bold")
     )
 videoInfoMsg.grid(
     column= 2  ,
@@ -296,7 +321,7 @@ frame4.grid(
     row =4
     )
 downloadPathButton = Button(frame4,
-    text = "Select Download Location : ",
+    text = "Select Download Location ",
     command= getPath
     )
 downloadPathButton.grid(
@@ -306,7 +331,8 @@ downloadPathButton.grid(
     )
 pathDisplay = Label(
     frame4,
-    text='Msg: your selected path is displayed here'
+    text='Choose a folder to store Current Video',
+    font=("calibri",11,"bold")
     )
 pathDisplay.grid(
     column= 1  ,
