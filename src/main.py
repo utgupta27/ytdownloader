@@ -3,6 +3,17 @@ from tkinter import ttk
 from tkinter import filedialog
 from pytube import YouTube
 
+def resolveLink(link):
+    remove="https://www.youtube.com/watch?v="
+    reslove ="https://youtu.be/"
+    if link[:len(remove)] == remove :
+        newLink = reslove+link[len(remove):]
+        return newLink
+    else:
+        return link
+
+
+
 def update():
     main.update()
     videoInfoMsg.config(
@@ -37,7 +48,7 @@ def status():
         size = fileSize
         unit = " KB"
     sizeDisplay.config(
-        text="File Size :"+ str(size/1024)[:4]+ unit,
+        text="File Size: "+ str(size/1024)[:4]+ unit,
         font= ("calibri",12,"bold"),
         bg='light blue'
     )
@@ -53,6 +64,7 @@ def get_video_info(url):
     details.append(yt.length)
     details.append(yt.views)
     main.update()
+    check=True
     return details
     
 
@@ -74,13 +86,14 @@ def get_streams(url):
     streams.append(yt.streams.get_by_itag(251))
     main.update()
     return streams
-    
+ 
 
 def getVideoDetails():
-
+    global check   
+    check =False
     global data 
     global videoStream
-    videoUrl = inputlink.get()
+    videoUrl = resolveLink(inputlink.get())
     
     try:
         data= get_video_info(videoUrl)
@@ -89,7 +102,7 @@ def getVideoDetails():
         main.update()
     except:
         videoInfoMsg.config(
-            text="Error Occured : Enter a Valid Url...",
+            text="Error Occured: Enter a Valid Url...",
             font= ("calibri",15,"bold"),bg='red'
             )
     else:
@@ -99,12 +112,12 @@ def getVideoDetails():
             bg='light green'
             )
         videoTitle.config(
-            text="Title : "+ data[0][:19]+"...",
+            text="Title: "+ data[0][:19]+"...",
             font= ("calibri",10,"bold"),
             bg='light blue'
             )
         videoRating.config(
-            text="Rating : "+ str(data[1])[:3],
+            text="Rating: "+ str(data[1])[:3],
             font= ("calibri",10,"bold"),
             bg='light blue'
             )
@@ -118,20 +131,31 @@ def getVideoDetails():
             size = data[2]
             unit = " Sec"
         videoDuration.config(
-            text="Duration : "+ str(size)[:4]+unit,
+            text="Duration: "+ str(size)[:4]+unit,
             font= ("calibri",10,"bold"),
             bg='light blue'
             )
         videoViews.config(
-            text="Views : "+ str(data[3]),
+            text="Views: "+ str(data[3]),
             font= ("calibri",10,"bold"),
             bg='light blue'
             )
 
 def download():
     global fileSize
+    
     main.update()
     videoIndex = index.get()
+    try:
+        if check == False :
+            pass
+    except:
+        sizeDisplay.config(
+            text = "Error: Click video info. button first!",
+            font= ("calibri",12,"bold"),
+            bg='orange'
+        )
+
     prefferedStream = videoStream[videoIndex]
     fileSize = prefferedStream.filesize
     try:
@@ -140,7 +164,7 @@ def download():
         main.update()
     except: 
         downloadSuccess.config(
-            text="Download Failed : Download Again",
+            text="Download Failed: Download Again",
             font= ("calibri",15,"bold"),bg='red'
             )
     else:
@@ -163,7 +187,7 @@ def progress_check(stream,chunk,bytes_remaining):
 
 main = Tk()
 main.title('YouTube Downloader')
-main.geometry('500x600')
+# main.geometry('500x600')
 main.resizable(0,0)
 
 
@@ -186,7 +210,7 @@ youTubeDownloader.grid(
 
 subTitle = Label(
     introFrame,
-    text='A video downloader for Youtube Videos Only',
+    text='A video downloader for Youtube Videos only.',
     font= ("calibri",10,"bold")
 )
 subTitle.grid(
@@ -233,7 +257,6 @@ inputlink.grid(
     column= 2 ,
     row = 1
     )
-print(videoUrl)
 
 findVideo= Button(
     inputFrame2,
@@ -257,7 +280,7 @@ videoInfoMsg.grid(
 
 videoTitle = Label(
     inputFrame2,
-    text="Title : ",
+    text="Title: ",
     font= ("calibri",10,"bold")
 )
 videoTitle.grid(
@@ -266,19 +289,19 @@ videoTitle.grid(
     )
 videoDuration = Label(
     inputFrame2,
-    text="Duration : ",
+    text="Duration: ",
     font= ("calibri",10,"bold")
 )
 videoDuration.grid(column = 1,row =4)
 videoRating = Label(
     inputFrame2,
-    text="Rating : ",
+    text="Rating: ",
     font= ("calibri",10,"bold")
 )
 videoRating.grid(column = 2,row =3)
 videoViews = Label(
     inputFrame2,
-    text="Views : ",
+    text="Views: ",
     font= ("calibri",10,"bold")
 )
 videoViews.grid(
@@ -294,7 +317,7 @@ frame3.grid(
 space = Label(
     frame3,
     font=("calibri",15,"bold"),
-    text='Select The Video Quality - '
+    text='Select The Video Quality- '
     )
 space.grid(
     column= 0,
@@ -321,7 +344,7 @@ frame4.grid(
     row =4
     )
 downloadPathButton = Button(frame4,
-    text = "Select Download Location ",
+    text = "Select Download Location",
     command= getPath
     )
 downloadPathButton.grid(
@@ -331,7 +354,7 @@ downloadPathButton.grid(
     )
 pathDisplay = Label(
     frame4,
-    text='Choose a folder to store Current Video',
+    text='No Location Selected',
     font=("calibri",11,"bold")
     )
 pathDisplay.grid(
@@ -354,7 +377,7 @@ downloadButton.grid(
 
 sizeDisplay = Label(
     frame4,
-    text='File Size : '
+    text='File Size: '
     )
 sizeDisplay.grid(
     column= 0  ,
@@ -393,7 +416,7 @@ downloadSuccess.grid(
 
 cancle = Button(
     frame7,
-    text="Cancle Download & Exit",
+    text="Cancel Download & Exit",
     font=("calibri",10,"bold"),
     foreground ="red",
     command = main.destroy
