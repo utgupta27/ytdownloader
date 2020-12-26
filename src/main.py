@@ -83,7 +83,7 @@ def get_streams(url):
     main.update()
     streams.append(yt.streams.get_by_itag(160))
     main.update()
-    streams.append(yt.streams.get_by_itag(251))
+    streams.append(yt.streams.get_by_itag(140))
     main.update()
     return streams
  
@@ -328,7 +328,7 @@ streamList=[
     [''' Type="video/mp4" Resolution="360p" fps="30fps"'''],
     [''' Type="video/mp4" Resolution="240p" fps="30fps"'''],
     [''' Type="video/mp4" Resolution="144p" fps="30fps"'''],
-    [''' Type="audio/webm" Bitrate="160kbps"           ''']]
+    [''' Type="audio/mp4a" Bitrate="160kbps"           ''']]
 index = IntVar(main,1)
 for i in range(len(streamList)):
     Radiobutton(
