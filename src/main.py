@@ -2,12 +2,16 @@ from tkinter import Tk,Frame,Label,StringVar,IntVar,Entry,Button,Radiobutton,HOR
 from tkinter import ttk
 from tkinter import filedialog
 from pytube import YouTube
+from platform import system
 from moviepy.editor import VideoFileClip
 from os import remove,getlogin
 
 def initialise():
     global path
-    path = "/home/"+ getlogin()+"/Dowloads/"
+    if system() == 'Linux':
+        path = "/home/"+ getlogin()+"/Downloads/"
+    elif system() == 'Windows':
+        path = "C:/Users/"+ getlogin() + "/Downloads/"
     pathDisplay.config(
         text= "Location: "+path,
         font= ("calibri",12,"bold"),
@@ -179,7 +183,6 @@ def download():
             bg='orange'
         )
     main.update()
-    status()
 
 
     prefferedStream = videoStream[videoIndex]
