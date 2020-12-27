@@ -172,7 +172,6 @@ def download():
     	if videoIndex == 5:
         	mp4_version = pydub.AudioSegment.from_file(finalPath, "mp4")
         	name = details[0]
-        	print(path)
         	mp4_version.export(path+"/"+name+".mp3", format="mp3", bitrate="160k")
         	os.remove(finalPath)
     	main.update()
