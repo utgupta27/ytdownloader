@@ -170,10 +170,11 @@ def download():
     	finalPath = prefferedStream.download(path)
 
     	if videoIndex == 5:
-        	mp4_version = pydub.AudioSegment.from_file(finalPath, "mp4")
-        	name = details[0]
-        	mp4_version.export(path+"/"+name+".mp3", format="mp3", bitrate="160k")
-        	os.remove(finalPath)
+            mp4_version = pydub.AudioSegment.from_file(finalPath, "mp4")
+            name = details[0]
+            location = os.path.join(path,name+".mp3")
+            mp4_version.export(location, format="mp3", bitrate="160k")
+            os.remove(finalPath)
     	main.update()
     
     except: 
