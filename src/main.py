@@ -3,7 +3,16 @@ from tkinter import ttk
 from tkinter import filedialog
 from pytube import YouTube
 from moviepy.editor import VideoFileClip
-from os import remove
+from os import remove,getlogin
+
+def initialise():
+    global path
+    path = "/home/"+ getlogin()+"/Dowloads/"
+    pathDisplay.config(
+        text= "Location: "+path,
+        font= ("calibri",12,"bold"),
+        bg='light blue'
+    )
 
 def convertToMp3():
     video_address = path +"/" + data[0] + ".mp4"
@@ -37,7 +46,6 @@ def update():
     main.update()
 
 def getPath():
-    global path
     path = filedialog.askdirectory()
     pathDisplay.config(
         text= "Location: "+path,
@@ -77,6 +85,7 @@ def get_video_info(url):
     details.append(yt.views)
     main.update()
     check=True
+    initialise()
     return details
     
 
@@ -169,6 +178,8 @@ def download():
             font= ("calibri",12,"bold"),
             bg='orange'
         )
+    main.update()
+    status()
 
 
     prefferedStream = videoStream[videoIndex]
