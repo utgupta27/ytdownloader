@@ -2,6 +2,11 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from pytube import YouTube
+import os
+import pydub
+details = []
+
+path = os.path.realpath('./Downloads')
 
 def resolveLink(link):
     remove="https://www.youtube.com/watch?v="
@@ -54,8 +59,7 @@ def status():
     )
 
 def get_video_info(url):
-
-    details=[]
+    global details
     update()
     yt=YouTube(url)
     main.update()
@@ -143,7 +147,8 @@ def getVideoDetails():
 
 def download():
     global fileSize
-    
+    global videoStream
+    global url
     main.update()
     videoIndex = index.get()
     try:
@@ -155,13 +160,23 @@ def download():
             font= ("calibri",12,"bold"),
             bg='orange'
         )
-
-    prefferedStream = videoStream[videoIndex]
+    if videoIndex == 5:
+    	prefferedStream = videoStream[videoIndex-1]
+    else:
+    	prefferedStream = videoStream[videoIndex]
     fileSize = prefferedStream.filesize
     try:
-        main.update()
-        prefferedStream.download(path)
-        main.update()
+    	main.update()
+    	finalPath = prefferedStream.download(path)
+
+    	if videoIndex == 5:
+        	mp4_version = pydub.AudioSegment.from_file(finalPath, "mp4")
+        	name = details[0]
+        	print(path)
+        	mp4_version.export(path+"/"+name+".mp3", format="mp3", bitrate="160k")
+        	os.remove(finalPath)
+    	main.update()
+    
     except: 
         downloadSuccess.config(
             text="Download Failed: Download Again",
@@ -172,6 +187,7 @@ def download():
             text="Download Success",
             font= ("calibri",15,"bold"),bg='light green'
             )
+
 global percent
 def progress_check(stream,chunk,bytes_remaining):
     percent = (100*(fileSize-bytes_remaining))//fileSize
@@ -328,7 +344,8 @@ streamList=[
     [''' Type="video/mp4" Resolution="360p" fps="30fps"'''],
     [''' Type="video/mp4" Resolution="240p" fps="30fps"'''],
     [''' Type="video/mp4" Resolution="144p" fps="30fps"'''],
-    [''' Type="audio/mp4a" Bitrate="160kbps"           ''']]
+    [''' Type="audio/mp4a" Bitrate="160kbps"           '''],
+    [''' Type="audio/mp3" Bitrate="160kbps"           ''']]
 index = IntVar(main,1)
 for i in range(len(streamList)):
     Radiobutton(
@@ -354,7 +371,7 @@ downloadPathButton.grid(
     )
 pathDisplay = Label(
     frame4,
-    text='No Location Selected',
+    text=path,
     font=("calibri",11,"bold")
     )
 pathDisplay.grid(
