@@ -2,6 +2,18 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from pytube import YouTube
+from moviepy.editor import *
+import os
+
+def convertToMp3():
+    video_address = path +"/" + data[0] + ".mp4"
+    audio_address = path + "/" +data[0] + ".mp3"
+    videoclip = VideoFileClip(video_address)
+    audioclip = videoclip.audio
+    audioclip.write_audiofile(audio_address)
+    audioclip.close()
+    videoclip.close()
+    os.remove(video_address)
 
 def resolveLink(link):
     remove="https://www.youtube.com/watch?v="
@@ -60,6 +72,7 @@ def get_video_info(url):
     yt=YouTube(url)
     main.update()
     details.append(yt.title)
+    print(yt.title)
     details.append(yt.rating)
     details.append(yt.length)
     details.append(yt.views)
@@ -84,6 +97,8 @@ def get_streams(url):
     streams.append(yt.streams.get_by_itag(160))
     main.update()
     streams.append(yt.streams.get_by_itag(140))
+    main.update()
+    streams.append(yt.streams.get_by_itag(18))
     main.update()
     return streams
  
@@ -156,18 +171,22 @@ def download():
             bg='orange'
         )
 
+
     prefferedStream = videoStream[videoIndex]
     fileSize = prefferedStream.filesize
     try:
         main.update()
         prefferedStream.download(path)
         main.update()
+
     except: 
         downloadSuccess.config(
             text="Download Failed: Download Again",
             font= ("calibri",15,"bold"),bg='red'
             )
     else:
+        if videoIndex == 5 :
+            convertToMp3()
         downloadSuccess.config(
             text="Download Success",
             font= ("calibri",15,"bold"),bg='light green'
@@ -328,7 +347,8 @@ streamList=[
     [''' Type="video/mp4" Resolution="360p" fps="30fps"'''],
     [''' Type="video/mp4" Resolution="240p" fps="30fps"'''],
     [''' Type="video/mp4" Resolution="144p" fps="30fps"'''],
-    [''' Type="audio/mp4a" Bitrate="160kbps"           ''']]
+    [''' Type="audio/mp4a" Bitrate="160kbps"           '''],
+    [''' Type="audio/mp3" Bitrate="160kbps"            ''']]
 index = IntVar(main,1)
 for i in range(len(streamList)):
     Radiobutton(
