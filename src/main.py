@@ -1,9 +1,9 @@
-from tkinter import *
+from tkinter import Tk,Frame,Label,StringVar,IntVar,Entry,Button,Radiobutton,HORIZONTAL
 from tkinter import ttk
 from tkinter import filedialog
 from pytube import YouTube
-from moviepy.editor import *
-import os
+from moviepy.editor import VideoFileClip
+from os import remove
 
 def convertToMp3():
     video_address = path +"/" + data[0] + ".mp4"
@@ -13,7 +13,7 @@ def convertToMp3():
     audioclip.write_audiofile(audio_address)
     audioclip.close()
     videoclip.close()
-    os.remove(video_address)
+    remove(video_address)
 
 def resolveLink(link):
     remove="https://www.youtube.com/watch?v="
@@ -72,7 +72,6 @@ def get_video_info(url):
     yt=YouTube(url)
     main.update()
     details.append(yt.title)
-    print(yt.title)
     details.append(yt.rating)
     details.append(yt.length)
     details.append(yt.views)
@@ -208,7 +207,6 @@ main = Tk()
 main.title('YouTube Downloader')
 # main.geometry('500x600')
 main.resizable(0,0)
-
 
 
 # top frame starts here
