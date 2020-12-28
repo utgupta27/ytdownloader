@@ -2,21 +2,9 @@ from tkinter import Tk,Frame,Label,StringVar,IntVar,Entry,Button,Radiobutton,HOR
 from tkinter import ttk
 from tkinter import filedialog
 from pytube import YouTube
-from platform import system
 from moviepy.editor import VideoFileClip
 from os import remove,getlogin
-
-def initialise():
-    global path
-    if system() == 'Linux':
-        path = "/home/"+ getlogin()+"/Downloads/"
-    elif system() == 'Windows':
-        path = "C:/Users/"+ getlogin() + "/Downloads/"
-    pathDisplay.config(
-        text= "Location: "+path,
-        font= ("calibri",12,"bold"),
-        bg='light blue'
-    )
+from platform import system
 
 def convertToMp3():
     video_address = path +"/" + data[0] + ".mp4"
@@ -27,6 +15,18 @@ def convertToMp3():
     audioclip.close()
     videoclip.close()
     remove(video_address)
+
+def initialisePath():
+    global path
+    if system() == 'Linux':
+        path = "/home/"+ getlogin()+"/Downloads/"
+    elif system() == 'Windows':
+        path = "C:/Users/"+ getlogin() + "/Downloads/"
+    pathDisplay.config(
+        text= "Location: "+path,
+        font= ("calibri",12,"bold"),
+        bg='light blue'
+    )
 
 def resolveLink(link):
     remove="https://www.youtube.com/watch?v="
@@ -50,6 +50,7 @@ def update():
     main.update()
 
 def getPath():
+    global path
     path = filedialog.askdirectory()
     pathDisplay.config(
         text= "Location: "+path,
@@ -89,7 +90,6 @@ def get_video_info(url):
     details.append(yt.views)
     main.update()
     check=True
-    initialise()
     return details
     
 
@@ -167,6 +167,8 @@ def getVideoDetails():
             font= ("calibri",10,"bold"),
             bg='light blue'
             )
+    initialisePath()
+    status()
 
 def download():
     global fileSize
@@ -182,7 +184,6 @@ def download():
             font= ("calibri",12,"bold"),
             bg='orange'
         )
-    main.update()
 
 
     prefferedStream = videoStream[videoIndex]
