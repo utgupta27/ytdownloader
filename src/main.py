@@ -1,9 +1,30 @@
+# For GUI interface importing the Tkinter library modules/components.
+# 'tk' for window frame containing minimise,maximise & close buttons
+# 'Frame' for grouping the different interface contents into a single entity
+# 'StringVar' used to store string value
+# 'IntVar' used for storing the index value obtained from RadioButtion class
+# 'Button' used for different customised buttons through which users interact with the program
+# 'RadioButton' used for selecting one index values among the others
+# 'HORIZONTAL' this tkinter-object is used for the horizontal orientation of the progress bar
 from tkinter import Tk,Frame,Label,StringVar,IntVar,Entry,Button,Radiobutton,HORIZONTAL
+# Importing the "ttk" Theme for the progress bar
 from tkinter import ttk
+# FileDialogue Module for asking system, where to save the files or which folder to be selected
 from tkinter import filedialog
+
+# Importing pytube module for downloading and selecting the streams for the video to be downloaded
 from pytube import YouTube
+
+# Importing the editor class of Moviepy Module that has 'VideoFileClip' member function
+# 'VideoFileClip' helps to convery the mp4a file to mp3
 from moviepy.editor import VideoFileClip
+
+#  Importing the OS module for accessing system functionality
+#  'getlogin' gives the username of the user who is logged in currently
+#  'remove' to delete the junk files from the system to free up space
 from os import remove,getlogin
+
+# Importing the platform module to identify the type of system on which the program is being used.
 from platform import system
 
 def convertToMp3():
