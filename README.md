@@ -1,5 +1,6 @@
 # Youtube Video Downloader
-    - A lightweight youtube video downloader built by using python3. Helpfull tool for quickly downloading youtube videos.
+    - A lightweight youtube video downloader built by using python3.
+    - Helpfull tool for quickly downloading youtube videos.
 ## Features
     - Download youtube video in desired quality
     - Able to donwload videos in multipe multimedia formats like - mp4,mp3,etc.
