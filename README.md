@@ -10,7 +10,7 @@
 - Simple and Easy User Inteface.
     
 ## Upcommig features
-- More easy and interactive user interface built by using PyOT5
+- More easy and interactive user interface built by using PyQT5
 - Support for different user-themes
 - Batch Downloading videos
 - Playlist downloader
