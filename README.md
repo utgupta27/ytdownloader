@@ -18,9 +18,9 @@
 
 ## Dependencies
     - To add these dependencies, Run the commands given below -
-        pip install pytube
-        pip install python3-tkinter
-        pip install moviepy
+        Type command: $pip install pytube
+        Type command: $pip install python3-tkinter
+        Type command: $pip install moviepy
     
 ## Install Instructions 
     - Install the above dependencies using pip
