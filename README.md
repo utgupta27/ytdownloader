@@ -15,10 +15,21 @@
     Playlist downloader
     Downlaod Scheduler
 
-## Dependencies 
-    pip install pytube
-    pip install python3-tkinter
-    pip install moviepy
+## Dependencies
+    - To add these dependencies, Run the commands given below -
+        pip install pytube
+        pip install python3-tkinter
+        pip install moviepy
+    
+## Install Instructions 
+    - Install the above dependencies using pip
+    - Clone this repository,
+        Type command : $git clone https://github.com/utgupta27/ytdownloader
+    - Now goto the source code directory i.e, ytdownloader>>src, 
+        Type command: $cd ytdownloader/src
+    - To run the program, 
+        Type command: $python3 main.py
+
 
 ## SnapShots
 ![alt text](https://github.com/utgupta27/ytdownloader/blob/master/images/103157913-43c18580-47de-11eb-8284-495562bc8dc3.png)
